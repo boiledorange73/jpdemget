@@ -437,13 +437,15 @@ var DemGetControl = L.Control.extend({
 
 window.addEventListener("load", function() {
   // lat,lon,rows,cols,anc[uml,lcr],plat,plon
-  var ipos = {"lon": 135, "lat": 35, "zoom": 6}, ir = "", ic = "", ia = "cc", ip = null;
+  var ipos = null, ir = "", ic = "", ia = "cc", ip = null;
   var urlParams = new URLSearchParams(window.location.search);
   if( urlParams.has("lat") && urlParams.has("lon") ) {
-    ipos.lon = parseFloat(urlParams.get("lon"));
-    ipos.lat = parseFloat(urlParams.get("lat"));
+    ipos = {
+      "lon": parseFloat(urlParams.get("lon")),
+      "lat": parseFloat(urlParams.get("lat"))
+    };
     if( urlParams.has("zoom") ) {
-     ipos.zoom = parseInt(urlParams.get("zoom"));
+      ipos.zoom = parseInt(urlParams.get("zoom"));
     }
   }
   if( urlParams.has("plon") && urlParams.has("plat") ) {
@@ -467,7 +469,13 @@ window.addEventListener("load", function() {
     changePermalink();
   });
   if( ipos ) {
-    map.setView([ipos.lat,ipos.lon], ipos.zoom);
+    map.setView([ipos.lat,ipos.lon], "zoom" in ipos ? ipos.zoom : 6);
+  }
+  else {
+    map.fitBounds([
+      [20.4167, 122.8750],
+      [45.5834, 154.0000]
+    ]);
   }
   var rectangle = null;
   var baselayers = {
@@ -574,4 +582,3 @@ window.addEventListener("load", function() {
   // setsup permalink
   changePermalink();
 });
-
