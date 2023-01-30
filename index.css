@@ -1,0 +1,60 @@
+
+HTML, body {
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#MAP {
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.permalink-root {
+  padding: 0.25em 0.5em;
+  border: solid 1px #000;
+  background: rgba(255,255,255,1);
+}
+
+.domgetcontrol-root {
+  padding: 0.5em;
+  background: rgba(204,204,204,1);
+  border: solid 1px #000;
+}
+
+.domgetcontrol-div {
+  padding: 0.5em 0;
+}
+
+.domgetcontrol-div-button {
+  padding: 0.5em 0;
+  text-align: center;
+}
+
+.domgetcontrol-div-button button {
+  margin: 0 0.5em;
+}
+
+
+.domgetcontrol-input-cells {
+  width: 5em;
+}
+
+.domgetcontrol-toggle {
+  width: 3em;
+  height: 3em;
+}
+
+.domgetcontrol-toggle svg {
+  width: 100%;
+  height: 100%;
+}
