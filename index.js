@@ -267,7 +267,8 @@ var DemGetControl = L.Control.extend({
     var b = this.getBounds();
     if( b ) {
       this._bounds_poly = L.rectangle(
-        [[b[0].lat, b[0].lon], [b[1].lat, b[1].lon]], {"color": "#F00", "width": 1});
+        [[b[0].lat, b[0].lon], [b[1].lat, b[1].lon]],
+        {"interactive": false, "color": "#F00", "width": 1});
       this._bounds_poly.addTo(this._map);
     }
   },
@@ -581,3 +582,4 @@ window.addEventListener("load", function() {
   // permalink
   changePermalink();
 });
+
