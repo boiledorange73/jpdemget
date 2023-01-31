@@ -181,6 +181,14 @@ var DemGetControl = L.Control.extend({
       L.DomEvent.stopPropagation(ev);
       this.clear();
     }, this);
+    // attribution
+    e_div = L.DomUtil.create("div");
+    this.e_main.appendChild(e_div);
+    var e_link = L.DomUtil.create("a");
+    e_link.href = "https://boiledorange73.sakura.ne.jp/dem.html";
+    e_link.target = "_blank";
+    e_link.innerText = "基盤地図情報DEM配信サービス";
+    e_div.appendChild(e_link);
      // closes main
     this._opened(true);
     // fin
@@ -437,15 +445,13 @@ var DemGetControl = L.Control.extend({
 
 window.addEventListener("load", function() {
   // lat,lon,rows,cols,anc[uml,lcr],plat,plon
-  var ipos = null, ir = "", ic = "", ia = "cc", ip = null;
+  var ipos = {"lon": 135, "lat": 35, "zoom": 6}, ir = "", ic = "", ia = "cc", ip = null;
   var urlParams = new URLSearchParams(window.location.search);
   if( urlParams.has("lat") && urlParams.has("lon") ) {
-    ipos = {
-      "lon": parseFloat(urlParams.get("lon")),
-      "lat": parseFloat(urlParams.get("lat"))
-    };
+    ipos.lon = parseFloat(urlParams.get("lon"));
+    ipos.lat = parseFloat(urlParams.get("lat"));
     if( urlParams.has("zoom") ) {
-      ipos.zoom = parseInt(urlParams.get("zoom"));
+     ipos.zoom = parseInt(urlParams.get("zoom"));
     }
   }
   if( urlParams.has("plon") && urlParams.has("plat") ) {
@@ -469,13 +475,7 @@ window.addEventListener("load", function() {
     changePermalink();
   });
   if( ipos ) {
-    map.setView([ipos.lat,ipos.lon], "zoom" in ipos ? ipos.zoom : 6);
-  }
-  else {
-    map.fitBounds([
-      [20.4167, 122.8750],
-      [45.5834, 154.0000]
-    ]);
+    map.setView([ipos.lat,ipos.lon], ipos.zoom);
   }
   var rectangle = null;
   var baselayers = {
@@ -503,19 +503,18 @@ window.addEventListener("load", function() {
     baselayers["地図"].addTo(map);
   }
   L.control.layers(baselayers).addTo(map);
-  // permalink control
+  //
   var permalink = (new PermalinkControl({"position": "bottomleft"}));
   permalink.addTo(map);
-  // demget control
   var demget = (new DemGetControl({"position": "bottomleft"}));
   demget.addTo(map);
-  // inits anchor and cells
+  //
+  // init
   demget.anchorText(ia);
   demget.cells({"cols": ic, "rows": ir});
   if( ip ) {
     demget.lonlat(ip);
   }
-  // when "fetch" button clicked
   demget.on("button_clicked", function(ev) {
     demget.remakeBounds();
     var bounds = demget.getBounds();
@@ -567,7 +566,7 @@ window.addEventListener("load", function() {
   // map -> permalink
   map.on("zoomend", changePermalink);
   map.on("moveend", changePermalink);
-  // demget -> permalink
+  //
   demget.on("bounds_changed", changePermalink);
   // click
   map.on("click", function(e) {
@@ -575,10 +574,10 @@ window.addEventListener("load", function() {
       demget.lonlat({"lon": e.latlng.lng, "lat": e.latlng.lat});
     }
   });
-  // default rows, cols
+  // rows, cols
   if( !demget.cells() ) {
-    demget.cells({"cols": 100, "rows": 100});
+    demget.cells({"cols": 200, "rows": 200});
   }
-  // setsup permalink
+  // permalink
   changePermalink();
 });
