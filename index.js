@@ -7,7 +7,7 @@ var PermalinkControl = L.Control.extend({
     e_main.className = "permalink-root";
     this._e_href = L.DomUtil.create("a");
     e_main.appendChild(this._e_href);
-    L.DomEvent.on(this._e_href, "click", L.DomEvent.stopPropagation, this);
+    L.DomEvent.on(e_root, "click", L.DomEvent.stopPropagation, this);
     this._e_href.target = "_blank";
     this._e_href.innerText = "Permalink";
     this.href("");
@@ -191,6 +191,12 @@ var DemGetControl = L.Control.extend({
     e_div.appendChild(e_link);
      // closes main
     this._opened(true);
+    // icon
+    this._icon_sight = L.icon({
+      "iconUrl": "sight.svg",
+      "iconSize": [32, 32],
+      "iconAnchor": [16, 16]
+    });
     // fin
     return e_root;
   },
@@ -203,6 +209,7 @@ var DemGetControl = L.Control.extend({
     this._e_rows = null;
     this._evented = null;
     this._removebounds();
+    this._icon_sight = null;
   },
   "clear": function() {
     this.anchor([0,0]);
@@ -258,20 +265,47 @@ var DemGetControl = L.Control.extend({
       return [{"lon": lllon, "lat": lllat}, {"lon": lllon + dlon, "lat": lllat + dlat}];
   },
   "_removebounds": function() {
+    if( this._pin ) {
+      this._pin.remove();
+      this._pin = null;
+    }
     if( this._bounds_poly ) {
       this._bounds_poly.remove();
+      this._bounds_poly = null;
     }
   },
   "_addbounds": function() {
     // adds
-    var b = this.getBounds();
-    if( b ) {
+    var bbox = this.getBounds();
+    if( bbox ) {
       this._bounds_poly = L.rectangle(
-        [[b[0].lat, b[0].lon], [b[1].lat, b[1].lon]],
+        [[bbox[0].lat, bbox[0].lon], [bbox[1].lat, bbox[1].lon]],
         {"interactive": false, "color": "#F00", "width": 1});
       this._bounds_poly.addTo(this._map);
     }
+    var lonlat = this.lonlat();
+    if( lonlat ) {
+      this._pin = L.marker(
+        [lonlat.lat, lonlat.lon],
+        {
+          "icon": this._icon_sight,
+          "draggable": true
+        }
+      ).addTo(this._map);
+      this._pin.on(
+        "dragend",
+        function(e) {
+          var latlng = e && e.target ? e.target.getLatLng() : null;
+          if( latlng ) {
+            this.lonlat({"lon": latlng.lng, "lat": latlng.lat});
+          }
+        },
+        this
+      );
+    }
   },
+
+
   "remakeBounds": function() {
     this._removebounds();
     this._addbounds();
@@ -352,13 +386,13 @@ var DemGetControl = L.Control.extend({
         ia = [1,0];
         break;
       case "ll":
-        ia = [-1,1];
+        ia = [-1,-1];
         break;
       case "lc":
-        ia = [0,1];
+        ia = [0,-1];
         break;
       case "lr":
-        ia = [1,1];
+        ia = [1,-1];
         break;
       }
       return this.anchor(ia);
@@ -569,11 +603,15 @@ window.addEventListener("load", function() {
   map.on("moveend", changePermalink);
   //
   demget.on("bounds_changed", changePermalink);
-  // click
   map.on("click", function(e) {
-    if( e && e.latlng ) {
-      demget.lonlat({"lon": e.latlng.lng, "lat": e.latlng.lat});
+    if( e ) {
+      if( e.latlng ) {
+        demget.lonlat({"lon": e.latlng.lng, "lat": e.latlng.lat});
+      }
+      resetPin(e.latlng);
     }
+    /*
+    */
   });
   // rows, cols
   if( !demget.cells() ) {
