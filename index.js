@@ -608,7 +608,6 @@ window.addEventListener("load", function() {
       if( e.latlng ) {
         demget.lonlat({"lon": e.latlng.lng, "lat": e.latlng.lat});
       }
-      resetPin(e.latlng);
     }
     /*
     */
