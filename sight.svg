@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
   <path d="M7 0,L9 0,L9 7,L16 7,L16 9,L9 9,L9 16,L7 16,L7 9,L0 9,L0 7,L7 7,Z"
-    fill="#066" stroke="0" />
+    fill="#FFF" stroke="0" />
   <path d="M8 1,A7 7 0 0 1 8 15,A7 7 0 0 1 8 1, M8 3,A5 5 0 0 0 8 13,A5 5 0 0 0 8 3"
+    fill="#FFF" stroke="0" />
+  <path d="M7.5 0.5,L8.5 0.5,L8.5 7.5,L15.5 7.5,L15.5 8.5,L8.5 8.5,L8.5 15.5,L7.5 15.5,L7.5 8.5,L0.5 8.5,L0.5 7.5,L7.5 7.5,Z"
+    fill="#066" stroke="0" />
+  <path d="M8 1.5,A6 6 0 0 1 8 14.5,A6 6 0 0 1 8 1.5, M8 2.5,A4 4 0 0 0 8 13.5,A4 4 0 0 0 8 2.5"
     fill="#066" stroke="0" />
 </svg>
