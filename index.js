@@ -479,12 +479,11 @@ var DemGetControl = L.Control.extend({
 
 
 window.addEventListener("load", function() {
-  // lat,lon,rows,cols,anc[uml,lcr],plat,plon
-  var ipos = {"lon": 135, "lat": 35, "zoom": 6}, ir = "", ic = "", ia = "cc", ip = null;
+  // lat,lon,zom,rows,cols,anc[uml,lcr],plat,plon
+  var ipos = null, ir = "", ic = "", ia = "cc", ip = null;
   var urlParams = new URLSearchParams(window.location.search);
   if( urlParams.has("lat") && urlParams.has("lon") ) {
-    ipos.lon = parseFloat(urlParams.get("lon"));
-    ipos.lat = parseFloat(urlParams.get("lat"));
+    ipos = {"lon": parseFloat(urlParams.get("lon")), "lat": parseFloat(urlParams.get("lat")), "zoom": 6}
     if( urlParams.has("zoom") ) {
      ipos.zoom = parseInt(urlParams.get("zoom"));
     }
@@ -509,8 +508,12 @@ window.addEventListener("load", function() {
     layername = e.name;
     changePermalink();
   });
+  // lat,lon,zoom or mbr
   if( ipos ) {
     map.setView([ipos.lat,ipos.lon], ipos.zoom);
+  }
+  else {
+    map.fitBounds([[20.416, 122.875], [45.584, 154.000]]);
   }
   var rectangle = null;
   var baselayers = {
