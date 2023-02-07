@@ -566,7 +566,7 @@ window.addEventListener("load", function() {
     }
     if( bounds ) {
       var cells = demget.cells();
-      var url = "http://boiledorange73.sakura.ne.jp/cgi-bin/mapserv.cgi?map=wcs&" +
+      var url = "https://boiledorange73.sakura.ne.jp/cgi-bin/mapserv.cgi?map=wcs&" +
         "SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&FORMAT=GTiff&" + 
         "COVERAGE=dem10b&" + 
         "BBOX="+bounds[0].lon+","+bounds[0].lat+","+bounds[1].lon+","+bounds[1].lat + "&" +
