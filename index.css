@@ -26,6 +26,7 @@ HTML, body {
 }
 
 .domgetcontrol-root {
+  position: relative;
   padding: 0.5em;
   background: rgba(204,204,204,1);
   border: solid 1px #000;
@@ -58,3 +59,24 @@ HTML, body {
   width: 100%;
   height: 100%;
 }
+
+#HELP {
+  position: absolute;
+  right: 0.25em;
+  top: 0.25em;
+  width: 1.5em;
+  height: 1.5m;
+  display: block;
+  padding: 0.25em;
+  background: #FFF;
+  border: solid 1px #999;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a#HELP:visited,
+a#HELP:link {
+  color: #000;
+}
+

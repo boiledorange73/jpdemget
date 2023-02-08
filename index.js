@@ -37,6 +37,9 @@ var PermalinkControl = L.Control.extend({
 });
 
 var DemGetControl = L.Control.extend({
+  "options": {
+    "help_url": null
+  },
   "_opened": function(v) {
     if( arguments && arguments.length > 0 ) {
       // setter
@@ -72,11 +75,20 @@ var DemGetControl = L.Control.extend({
     // main
     this.e_main = L.DomUtil.create("div");
     e_root.appendChild(this.e_main);
-    //
+    // root
     this.e_main.className = "domgetcontrol-root";
     L.DomEvent.on(e_root, "mousedown", L.DomEvent.stopPropagation);
     L.DomEvent.on(e_root, "click", L.DomEvent.stopPropagation);
     L.DomEvent.on(e_root, "dblclick", L.DomEvent.stopPropagation);
+    // help
+    if( this.options && this.options.help_url ) {
+      var e = L.DomUtil.create("a");
+      e.id = "HELP";
+      e.href = this.options.help_url;
+      e.target = "_blank";
+      e.innerText = "?";
+      this.e_main.appendChild(e);
+    }
     // anchor
     var e_table = L.DomUtil.create("table");
     this.e_main.appendChild(e_table);
@@ -479,11 +491,12 @@ var DemGetControl = L.Control.extend({
 
 
 window.addEventListener("load", function() {
-  // lat,lon,zom,rows,cols,anc[uml,lcr],plat,plon
-  var ipos = null, ir = "", ic = "", ia = "cc", ip = null;
+  // lat,lon,rows,cols,anc[uml,lcr],plat,plon
+  var ipos = {"lon": 135, "lat": 35, "zoom": 6}, ir = "", ic = "", ia = "cc", ip = null;
   var urlParams = new URLSearchParams(window.location.search);
   if( urlParams.has("lat") && urlParams.has("lon") ) {
-    ipos = {"lon": parseFloat(urlParams.get("lon")), "lat": parseFloat(urlParams.get("lat")), "zoom": 6}
+    ipos.lon = parseFloat(urlParams.get("lon"));
+    ipos.lat = parseFloat(urlParams.get("lat"));
     if( urlParams.has("zoom") ) {
      ipos.zoom = parseInt(urlParams.get("zoom"));
     }
@@ -508,12 +521,8 @@ window.addEventListener("load", function() {
     layername = e.name;
     changePermalink();
   });
-  // lat,lon,zoom or mbr
   if( ipos ) {
     map.setView([ipos.lat,ipos.lon], ipos.zoom);
-  }
-  else {
-    map.fitBounds([[20.416, 122.875], [45.584, 154.000]]);
   }
   var rectangle = null;
   var baselayers = {
@@ -544,7 +553,10 @@ window.addEventListener("load", function() {
   //
   var permalink = (new PermalinkControl({"position": "bottomleft"}));
   permalink.addTo(map);
-  var demget = (new DemGetControl({"position": "bottomleft"}));
+  var demget = (new DemGetControl({
+    "position": "bottomleft",
+    "help_url": "https://zenn.dev/boiledorange73/articles/0061-howto-demget",
+  }));
   demget.addTo(map);
   //
   // init
@@ -566,7 +578,7 @@ window.addEventListener("load", function() {
     }
     if( bounds ) {
       var cells = demget.cells();
-      var url = "https://boiledorange73.sakura.ne.jp/cgi-bin/mapserv.cgi?map=wcs&" +
+      var url = "http://boiledorange73.sakura.ne.jp/cgi-bin/mapserv.cgi?map=wcs&" +
         "SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&FORMAT=GTiff&" + 
         "COVERAGE=dem10b&" + 
         "BBOX="+bounds[0].lon+","+bounds[0].lat+","+bounds[1].lon+","+bounds[1].lat + "&" +
