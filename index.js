@@ -245,33 +245,45 @@ var DemGetControl = L.Control.extend({
       if( !lonlat || !anchor || !cells ) {
         return null;
       }
-      // deg/cell = 0.4sec = 0.4/3600[deg] = 4/9000
-      // cell/deg = 2250
+      // deg/cell = 0.4sec = 0.4/3600[deg] = 1/9000
+      // cell/deg = 9000
       // lon*(cell/deg) [cell]
-      var lon_cut = Math.floor(lonlat.lon * 2250.0)/2250.0;
-      var lat_cut = Math.floor(lonlat.lat * 2250.0)/2250.0;
-      var dlon = cells.cols * 0.4 / 3600.0;
-      var dlat = cells.rows * 0.4 / 3600.0;
+      // cell / deg
+      var cpd_lon = 9000.0;
+      var cpd_lat = 9000.0;
+      // deg / cell
+      var dpc_lon = 1.0/cpd_lon;
+      var dpc_lat = 1.0/cpd_lat;
+      // cut
+      var lon_cut = Math.floor(lonlat.lon * cpd_lon)*dpc_lon;
+      var lat_cut = Math.floor(lonlat.lat * cpd_lat)*dpc_lat;
+      // width, height
+      var dlon = cells.cols*dpc_lat;
+      var dlat = cells.rows*dpc_lon;
       var lllat, lllon;
       // lon
       if( anchor[0] < 0 ) { // left
         lllon = lon_cut;
       }
       else if( anchor[0] > 0 ) { // right
-        lllon = lon_cut - dlon;
+        // lllon = lon_cut - dlon;
+        lllon = lon_cut - dlon + dpc_lon;
       }
       else { // center
-        lllon = lon_cut - 0.5 * dlon;
+        // lllon = lon_cut - 0.5 * dlon;
+        lllon = lon_cut - Math.floor(0.5*cells.cols) * dpc_lon;
       }
       // lat
       if( anchor[1] < 0 ) { // left
         lllat = lat_cut;
       }
       else if( anchor[1] > 0 ) { // right
-        lllat = lat_cut - dlat;
+        // lllat = lat_cut - dlat;
+        lllat = lat_cut - dlat + dpc_lat;
       }
       else { // center
-        lllat = lat_cut - 0.5 * dlat;
+        // lllat = lat_cut - 0.5 * dlat;
+        lllat = lat_cut - Math.floor(0.5*cells.rows) * dpc_lat;
       }
       // border
       return [{"lon": lllon, "lat": lllat}, {"lon": lllon + dlon, "lat": lllat + dlat}];
